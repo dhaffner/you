@@ -1,0 +1,3 @@
+[submodule "dhaffner"]
+	path = dhaffner
+	url = git://github.com/dhaffner/dhaffner.git
