@@ -4,12 +4,14 @@ from __future__ import print_function
 import urwid
 from urwid import curses_display
 
-from dhaffner import misc
-
 
 PALETTE = [('prompt focus', 'light cyan', 'default'),
            ('prompt', 'default', 'default'),
            ('reveal focus', 'light cyan', 'default', 'bold')]
+
+
+def noop(*args, **kwargs):
+    pass
 
 
 class SearchEdit(urwid.Edit):
@@ -95,7 +97,7 @@ class Window(object):
         self.input = SearchEdit(edit_text="", main=self)
 
         self.header = urwid.AttrWrap(self.input, 'prompt', 'prompt focus')
-        self.footer = urwid.Text('dis a footah!', wrap='clip')
+        self.footer = urwid.Text('', wrap='clip')
         frame = urwid.Frame(body=box, header=self.header, footer=self.footer,
                             focus_part='header')
 
@@ -106,7 +108,7 @@ class Window(object):
                                    screen=curses_display.Screen(),
                                    unhandled_input=self.unhandled)
 
-        self.input_callback = self.select_callback = misc.noop
+        self.input_callback = self.select_callback = noop
 
     def unhandled(self, key):
         focused = self.frame.focus_position

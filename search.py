@@ -10,19 +10,22 @@ from youtube_dl import FileDownloader
 from youtube_dl.InfoExtractors import (YoutubePlaylistIE, YoutubeChannelIE,
                                        YoutubeSearchIE, YoutubeUserIE, YoutubeIE)
 
-from dhaffner import misc
-
 YouTubeService = gdata.youtube.service.YouTubeService
 YouTubeVideoQuery = gdata.youtube.service.YouTubeVideoQuery
 
 FIELDS = ('title', 'description', 'url', 'date', 'duration')
 video = collections.namedtuple('video', FIELDS)
 
+
+def noop(*args, **kwargs):
+    pass
+
+
 # Motivation: provide a simple FileDownloader to effectively get URLs for the
 # YouTube videos we want to play.
 class DummyFileDownloader(FileDownloader):
     def __init__(self, params):
-        self.info_callback = misc.noop
+        self.info_callback = noop
         super(DummyFileDownloader, self).__init__(params)
 
     def process_info(self, info_dict):
