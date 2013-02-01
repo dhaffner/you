@@ -88,7 +88,7 @@ class SearchResult(urwid.WidgetWrap):  # Manage individual lines. (rows)
 
 
 class Window(object):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.content = []
 
         self.walker = SearchResultWalker(self.content)
@@ -108,7 +108,11 @@ class Window(object):
                                    screen=curses_display.Screen(),
                                    unhandled_input=self.unhandled)
 
-        self.input_callback = self.select_callback = noop
+        # Handle kwargs
+
+        self.input_callback = kwargs.get('input_callback', noop)
+        self.select_callback = kwargs.get('select_callback', noop)
+        self.query = kwargs.get('query', '')
 
     def unhandled(self, key):
         focused = self.frame.focus_position
@@ -135,6 +139,10 @@ class Window(object):
         return
 
     def run(self):
+        if self.query:
+            self.input.set_edit_text(self.query)
+            self.input_callback(self.query)
+            del self.query
         self.loop.run()
 
     def refresh(self):

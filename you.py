@@ -24,11 +24,15 @@ log = logging.getLogger(__name__)
 
 class You(object):
     def __init__(self, args):
-        self.window = window = Window()
+        query = None
+        if args.term:
+            query = ' '.join(args.term)
+
         self.player = None
-        window.set_input_callback(self.on_input)
-        window.set_select_callback(self.on_select)
-        window.run()
+
+        self.window = window = Window(query=query,
+                                      input_callback=self.on_input,
+                                      select_callback=self.on_select)
 
     def on_input(self, text):
         results = search(text)
@@ -55,6 +59,8 @@ class You(object):
 
         extract(video.url, callback=callback)
 
+    def run(self):
+        self.window.run()
 
 
 # def print_info():
@@ -81,12 +87,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A videoless command-line YouTube player.')
 
     parser.add_argument('--config', nargs='?', dest='config', metavar='filename',
-                        default='~/.you', help='you configuration.')
-    parser.add_argument('--update', action='store_true',
-                        help="Placeholder option -- not implemented")
+                        help='configuration file (currently not implemented)')
     parser.add_argument('term', nargs='*',
-                        help='The text to search for.')
+                        help='term(s) to search for')
 
     args = parser.parse_args()
 
-    You(args)
+    main = You(args)
+    main.run()
