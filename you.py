@@ -15,12 +15,6 @@ from player import Player
 from search import search, extract
 from window import Window
 
-# Logging
-LOG_FILENAME = 'you.log'
-logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
-
 
 class You(object):
     def __init__(self, args):
@@ -51,7 +45,6 @@ class You(object):
             self.player = Player(window=self.window)
 
         def callback(info):
-            log.info(info)
             if 'url' not in info:
                 # TODO: fuck
                 return

@@ -129,6 +129,7 @@ class Window(object):
                 self.focus('body')
             else:
                 self.focus('header')
+                self.input.clear()
 
         if key == 'down' and focused == 'header':
             self.focus('body')
