@@ -62,6 +62,7 @@ class Player(object):
         self.player.set_time(self.player.get_time() + delta)
 
     def play(self, video, uri):
+        self.window.set_footer('--:-- loading {}'.format(video.title))
         self.player.set_media(self.instance.media_new(uri))
         self.bind('MediaPlayerEndReached', self.end_callback, video)
         self.bind('MediaPlayerTimeChanged', self.time_callback, video)
