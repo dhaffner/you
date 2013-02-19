@@ -23,7 +23,7 @@ Enter - search or play selected result
 Install
 =======
 
-    The requirements for this are urwid, GData, youtube-dl, and the VLC Python bindings. The former three are installable via pip. Here are installation instructions:
+The requirements for this are urwid, GData, youtube-dl, and the VLC Python bindings. The former three are installable via pip. Here are installation instructions:
 
     git clone git@github.com:dhaffner/you.git
     cd you
