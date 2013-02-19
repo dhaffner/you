@@ -50,6 +50,7 @@ class You(object):
                 return
             self.play(video, info['url'])
 
+        self.window.footer.set_text('--:-- trying to extract video URL for {}'.format(video.title))
         extract(video.url, callback=callback)
 
     def run(self):

@@ -1,23 +1,32 @@
-
+An audio-only YouTube player for the command line.
 
 Usage
 =====
 
 Search for a video on YouTube
 
-    you "dirt off your shoulder"
+    ./you.py "dirt off your shoulder"
 
-    you men at work land down under
+    ./you.py men at work land down under
 
 
 Display the help.
 
-    you -h
+    ./you.py -h
+
+*Keyboard controls*
+
+Esc - quite
+Tab - switch between input and result list
+Enter - search or play selected result
 
 Install
 =======
-    git clone ...
-    cd ...
+
+    The requirements for this are urwid, GData, youtube-dl, and the VLC Python bindings. The former three are installable via pip. Here are installation instructions:
+
+    git clone git@github.com:dhaffner/you.git
+    cd you
     pip install -r requirements.txt
     curl -o vlc.py "http://git.videolan.org/?p=vlc/bindings/python.git;a=blob_plain;f=generated/vlc.py;hb=HEAD"
 
