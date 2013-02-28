@@ -54,7 +54,7 @@ class Player(object):
         if not self.window:
             return
         timef = _time_format(self.player.get_time() / 1000)
-        self.window.set_footer('{} {}'.format(timef, video.title))
+        self.window.feedback('{} {}'.format(timef, video.title))
 
     def info(self):
         pass
@@ -63,10 +63,11 @@ class Player(object):
         self.player.set_time(self.player.get_time() + delta)
 
     def play(self, video, uri):
-        self.window.set_footer('--:-- loading {}'.format(video.title))
+        self.window.feedback('--:-- loading {}'.format(video.title))
         self.player.set_media(self.instance.media_new(uri))
         self.bind('MediaPlayerEndReached', self.end_callback, video)
         self.bind('MediaPlayerTimeChanged', self.time_callback, video)
+        self.window.feedback('')
         self.player.play()
 
     def pause(self):

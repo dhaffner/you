@@ -16,11 +16,6 @@ def noop(*args, **kwargs):
 
 class SearchEdit(urwid.Edit):
     def __init__(self, callback=None, caption='~ ', main=None, *args, **kwargs):
-        # if callback is None:
-        #     callback = misc.noop
-
-        # self.callback = callback
-        # self.main = main
         super(SearchEdit, self).__init__(caption=caption, *args, **kwargs)
 
     def keypress(self, size, key):
@@ -31,30 +26,18 @@ class SearchEdit(urwid.Edit):
             return super(SearchEdit, self).keypress(size, key)
 
         return key
-        # if key == 'enter':
-        #     self.callback(self.edit_text)
-
-        # elif key == '/':
-        #     self.main.focus('body')
-
-        # else:
-        #     return super(SearchEdit, self).keypress(size, key)
 
     def clear(self):
         self.set_edit_text('')
 
 
 class SearchResultBox(urwid.ListBox):
-    # def keypress(self, size, key):
-    #     return key
     pass
+
 
 class SearchResultWalker(urwid.SimpleListWalker):
     def selectable(self):
         return True
-
-    # def keypress(self, size, key):
-    #     return key
 
 
 class SearchResult(urwid.WidgetWrap):  # Manage individual lines. (rows)
@@ -122,7 +105,7 @@ class Window(object):
             if focused == 'header':
                 self.input_callback(self.input.get_edit_text())
             elif focused == 'body':
-                selected, _  = self.walker.get_focus()
+                selected, _ = self.walker.get_focus()
                 self.select_callback(selected.video)
 
         if key == 'tab':
@@ -134,7 +117,6 @@ class Window(object):
 
         if key == 'down' and focused == 'header':
             self.focus('body')
-
 
         if key in ('Q', 'esc'):
             self.quit()
@@ -159,6 +141,8 @@ class Window(object):
     def set_footer(self, text):
         self.footer.set_text(text)
         self.refresh()
+
+    feedback = set_footer  # Convenience alias
 
     def set_results(self, results):
         self.walker[:] = [SearchResult(r, callback=self.select_callback) for r in results]

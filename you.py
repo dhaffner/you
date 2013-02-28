@@ -2,14 +2,6 @@
 from __future__ import print_function
 
 import argparse
-import collections
-import datetime
-import functools
-import itertools
-import logging
-import operator
-import pprint
-import re
 
 from player import Player
 from search import search, extract
@@ -23,7 +15,6 @@ class You(object):
             query = ' '.join(args.term)
 
         self.player = None
-
         self.window = window = Window(query=query,
                                       input_callback=self.on_input,
                                       select_callback=self.on_select)
@@ -55,32 +46,11 @@ class You(object):
                 # TODO: fuck
                 return
             self.play(video, info['url'])
-
-        self.window.footer.set_text('--:-- trying to extract video URL for {}'.format(video.title))
+        self.window.feedback('--:-- trying to extract video URL for {}'.format(video.title))
         extract(video.url, callback=callback)
 
     def run(self):
         self.window.run()
-
-
-# def print_info():
-#     """Print information about the media"""
-#     try:
-#         print_version()
-#         media = player.get_media()
-#         print('State: %s' % player.get_state())
-#         print('Media: %s' % media.get_mrl())
-#         print('Track: %s/%s' % (player.video_get_track(), player.video_get_track_count()))
-#         print('Current time: %s/%s' % (player.get_time(), media.get_duration()))
-#         print('Position: %s' % player.get_position())
-#         print('FPS: %s (%d ms)' % (player.get_fps(), mspf()))
-#         print('Rate: %s' % player.get_rate())
-#         print('Video size: %s' % str(player.video_get_size(0)))  # num=0
-#         print('Scale: %s' % player.video_get_scale())
-#         print('Aspect ratio: %s' % player.video_get_aspect_ratio())
-#        #print('Window:' % player.get_hwnd()
-#     except Exception:
-#         print('Error: %s' % sys.exc_info()[1])
 
 
 if __name__ == '__main__':
