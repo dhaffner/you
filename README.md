@@ -29,6 +29,4 @@ The requirements for this are urwid, GData, youtube-dl, and the VLC Python bindi
 
     git clone https://github.com/dhaffner/you.git
     cd you
-    pip install -r requirements.txt
-    curl -o vlc.py "http://git.videolan.org/?p=vlc/bindings/python.git;a=blob_plain;f=generated/vlc.py;hb=HEAD"
-
+    make
