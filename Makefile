@@ -1,8 +1,4 @@
-# See the README for installation instructions.
-
 all: packages vlc.py
-
-# Modify this rule to build your own custom release.
 
 packages:
 	pip install -r ./requirements.txt

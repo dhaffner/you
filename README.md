@@ -22,6 +22,9 @@ Tab - switch between input and result list
 
 Enter - search or play selected result
 
+P or Spacebar - pause
+
+
 Install
 =======
 
