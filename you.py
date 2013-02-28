@@ -32,8 +32,14 @@ class You(object):
         results = search(text)
         self.window.set_results(results)
 
-    def on_select(self, video):
-        self.extract(video)
+    def on_select(self, video, size=None, key=None):
+        if not (size or key):  # new video
+            self.extract(video)
+
+        elif self.player:
+            self.player.input(video, size, key)
+
+        return key
 
     def play(self, video, uri):
         if not self.player:

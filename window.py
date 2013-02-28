@@ -61,6 +61,7 @@ class SearchResult(urwid.WidgetWrap):  # Manage individual lines. (rows)
 
     def __init__(self, video, callback=None):
         self.video = video
+        self.callback = callback
         self.title = urwid.Text(video.title, wrap='clip')
         self.description = urwid.Text((video.description or '').strip(),
                                       wrap='clip')
@@ -82,8 +83,8 @@ class SearchResult(urwid.WidgetWrap):  # Manage individual lines. (rows)
         return True
 
     def keypress(self, size, key):
-        # if self.callback is not None:
-        #     return self.callback(self.video, size, key)
+        if self.callback:
+            return self.callback(self.video, size, key)
         return key
 
 
@@ -160,7 +161,7 @@ class Window(object):
         self.refresh()
 
     def set_results(self, results):
-        self.walker[:] = [SearchResult(r) for r in results]
+        self.walker[:] = [SearchResult(r, callback=self.select_callback) for r in results]
 
     def set_input_callback(self, callback):
         self.input_callback = callback

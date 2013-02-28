@@ -30,6 +30,7 @@ class Player(object):
 
         self.player = instance.media_player_new()
         self.keybindings = {
+            'p': self.pause,
             ' ': self.pause,
             '+': functools.partial(self.seek, 1000),
             '-': functools.partial(self.seek, -1000),
@@ -69,7 +70,10 @@ class Player(object):
         self.player.play()
 
     def pause(self):
-        pass
+        if self.player.is_playing():
+            self.player.pause()
+        else:
+            self.player.play()
 
     def input(self, video, size, key):
         if key in self.keybindings:
