@@ -5,9 +5,11 @@ Usage
 
 Search for a video on YouTube
 
-    ./you.py "dirt off your shoulder"
+    you "dirt off your shoulder"
 
-    ./you.py men at work land down under
+The search command accepts any number of arguments.
+
+    you men at work land down under
 
 
 Display the help.
@@ -28,8 +30,6 @@ P or Spacebar - pause
 Install
 =======
 
-The requirements for this are urwid, GData, youtube-dl, and the VLC Python bindings. The former three are installable via pip. Here are installation instructions:
-
     git clone https://github.com/dhaffner/you.git
     cd you
-    make
+    make all

@@ -52,16 +52,3 @@ class You(object):
     def run(self):
         self.window.run()
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A videoless command-line YouTube player.')
-
-    parser.add_argument('--config', nargs='?', dest='config', metavar='filename',
-                        help='configuration file (currently not implemented)')
-    parser.add_argument('term', nargs='*',
-                        help='term(s) to search for')
-
-    args = parser.parse_args()
-
-    main = You(args)
-    main.run()
