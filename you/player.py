@@ -36,7 +36,7 @@ class Player(object):
             '-': functools.partial(self.seek, -1000),
             'i': self.info,
             'q': self.quit,
-            '/': self.window.focus
+#            '/': self.window.focus
         }
 
         attach = self.player.event_manager().event_attach
@@ -62,12 +62,10 @@ class Player(object):
     def seek(self, delta):
         self.player.set_time(self.player.get_time() + delta)
 
-    def play(self, video, uri):
-        self.window.feedback('--:-- loading {}'.format(video.title))
+    def play(self, uri):
         self.player.set_media(self.instance.media_new(uri))
-        self.bind('MediaPlayerEndReached', self.end_callback, video)
-        self.bind('MediaPlayerTimeChanged', self.time_callback, video)
-        self.window.feedback('')
+        # self.bind('MediaPlayerEndReached', self.end_callback, video)
+        # self.bind('MediaPlayerTimeChanged', self.time_callback, video)
         self.player.play()
 
     def pause(self):

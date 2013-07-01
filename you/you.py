@@ -7,17 +7,33 @@ from player import Player
 from search import search, extract
 from window import Window
 
+from pprint import pprint
 
 class You(object):
-    def __init__(self, args):
-        query = None
-        if args.term:
-            query = ' '.join(args.term)
-
+    def __init__(self, no_window=True):
         self.player = None
-        self.window = window = Window(query=query,
-                                      input_callback=self.on_input,
-                                      select_callback=self.on_select)
+        self.no_window = no_window
+
+        if not no_window:
+            self.window = Window(input_callback=self.on_input,
+                                 select_callback=self.on_select)
+
+    def search(self, query):
+        results = search(query)
+        if not self.no_window:
+            self.window.set_results(results)
+
+        for i, v in enumerate(results):
+            if i > 0:
+                print()
+
+            print('{:02d} {}'.format(i, v.title))
+
+            if v.description:
+                print('   {}'.format(v.description))
+
+            print('   {}'.format(v.url))
+
 
     def on_input(self, text):
         results = search(text)
@@ -32,22 +48,20 @@ class You(object):
 
         return key
 
-    def play(self, video, uri):
+    def play(self, uri):
         if not self.player:
-            self.player = Player(window=self.window)
-        self.player.play(video, uri)
+            self.player = Player()
+        print('Playing: {}'.format(uri))
+        self.player.play(uri)
 
-    def extract(self, video):
-        if not self.player:
-            self.player = Player(window=self.window)
-
+    def extract(self, url):
         def callback(info):
             if 'url' not in info:
                 # TODO: fuck
                 return
-            self.play(video, info['url'])
-        self.window.feedback('--:-- trying to extract video URL for {}'.format(video.title))
-        extract(video.url, callback=callback)
+            self.play(info['url'])
+
+        extract(url, callback=callback)
 
     def run(self):
         self.window.run()

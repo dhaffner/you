@@ -1,18 +1,43 @@
 #!/usr/bin/env python
 
-import argparse
+import baker
 
 from you import you
 
+
+@baker.command(default=True, shortopts={"no_window": "n"})
+def play(no_window=False, url=None, *query):
+    main = you.You(no_window=no_window)
+
+    if url is not None:
+        main.extract(url)
+
+    else:
+        main.search(' '.join(query))
+
+
+@baker.command
+def search(*query):
+    main = you.You(no_window=True)
+    main.search(' '.join(query))
+
+
+@baker.command
+def extract(uri):
+    from you import search
+    search.extract(uri)
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A videoless command-line YouTube player.')
+    # parser = argparse.ArgumentParser(description='A videoless command-line YouTube player.')
 
-    parser.add_argument('--config', nargs='?', dest='config', metavar='filename',
-                        help='configuration file (currently not implemented)')
-    parser.add_argument('term', nargs='*',
-                        help='term(s) to search for')
+    # parser.add_argument('--config', nargs='?', dest='config', metavar='filename',
+    #                     help='configuration file (currently not implemented)')
+    # parser.add_argument('term', nargs='*',
+    #                     help='term(s) to search for')
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    main = you.You(args)
-    main.run()
+    # main = you.You(args)
+    # main.run()
+    baker.run()

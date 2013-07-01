@@ -17,16 +17,32 @@ FIELDS = ('title', 'description', 'url', 'date', 'duration')
 video = collections.namedtuple('video', FIELDS)
 
 
+EXTRACTORS = (YoutubePlaylistIE,
+              YoutubeChannelIE,
+              YoutubeSearchIE,
+              YoutubeUserIE,
+              YoutubeIE)
+
+
 def noop(*args, **kwargs):
     pass
+
+
+def extract(url, callback=None):
+    downloader = DummyFileDownloader({'outtmpl': '', 'format_limit': '35'})
+    downloader.extract(url)
 
 
 # Motivation: provide a simple FileDownloader to effectively get URLs for the
 # YouTube videos we want to play.
 class DummyFileDownloader(FileDownloader):
     def __init__(self, params):
-        self.info_callback = noop
         super(DummyFileDownloader, self).__init__(params)
+        for extractor in map(apply, EXTRACTORS):
+            self.add_info_extractor(extractor)
+
+    def extract(self, uri):
+        print self.extract_info(uri, download=False)
 
     def process_info(self, info_dict):
         self.info_callback(info_dict)
@@ -46,26 +62,9 @@ class DummyFileDownloader(FileDownloader):
     def trouble(self, message=None, tb=None):
         pass  # TODO: should we just pass here?
 
-
-def _extractors():
-    return (YoutubePlaylistIE(),
-            YoutubeChannelIE(),
-            YoutubeUserIE(),
-            YoutubeSearchIE(),
-            YoutubeIE())
-
-
-def _downloader():
-    d = DummyFileDownloader({'outtmpl': '', 'format_limit': '35'})
-    for e in _extractors():
-        d.add_info_extractor(e)
-    return d
-
-
 #
 #
 #
-
 
 def create_video(entry):
     getter = lambda name, attr: (name, operator.attrgetter(attr))
@@ -87,7 +86,3 @@ def search(terms):
     return map(create_video, entries)
 
 
-def extract(url, callback=None):
-    downloader = _downloader()
-    downloader.set_info_callback(callback)
-    downloader.download([url])
