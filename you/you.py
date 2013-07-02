@@ -51,7 +51,7 @@ class You(object):
     def play(self, uri):
         if not self.player:
             self.player = Player()
-        print('Playing: {}'.format(uri))
+
         self.player.play(uri)
 
     def extract(self, url):

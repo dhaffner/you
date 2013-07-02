@@ -6,9 +6,9 @@ import gdata
 import gdata.youtube
 import gdata.youtube.service
 
-from youtube_dl import FileDownloader
-from youtube_dl.InfoExtractors import (YoutubePlaylistIE, YoutubeChannelIE,
-                                       YoutubeSearchIE, YoutubeUserIE, YoutubeIE)
+from youtube_dl import FileDownloader, YoutubeDL
+
+from pprint import pprint
 
 YouTubeService = gdata.youtube.service.YouTubeService
 YouTubeVideoQuery = gdata.youtube.service.YouTubeVideoQuery
@@ -17,38 +17,36 @@ FIELDS = ('title', 'description', 'url', 'date', 'duration')
 video = collections.namedtuple('video', FIELDS)
 
 
-EXTRACTORS = (YoutubePlaylistIE,
-              YoutubeChannelIE,
-              YoutubeSearchIE,
-              YoutubeUserIE,
-              YoutubeIE)
-
-
 def noop(*args, **kwargs):
     pass
 
 
 def extract(url, callback=None):
-    downloader = DummyFileDownloader({'outtmpl': '', 'format_limit': '35'})
-    downloader.extract(url)
+    extractor = Extractor({'outtmpl': '', 'format_limit': '35'})
+    extractor.extract(url, callback)
 
 
 # Motivation: provide a simple FileDownloader to effectively get URLs for the
 # YouTube videos we want to play.
-class DummyFileDownloader(FileDownloader):
+class Extractor(YoutubeDL):
     def __init__(self, params):
-        super(DummyFileDownloader, self).__init__(params)
-        for extractor in map(apply, EXTRACTORS):
-            self.add_info_extractor(extractor)
+        super(Extractor, self).__init__(params)
+        # for extractor in map(apply, EXTRACTORS):
+        #     self.add_info_extractor(extractor)
+        self.add_default_info_extractors()
 
-    def extract(self, uri):
-        print self.extract_info(uri, download=False)
+    def extract(self, uri, callback=None):
+        extracted = self.extract_info(uri, download=False)
 
-    def process_info(self, info_dict):
-        self.info_callback(info_dict)
+        if 'entries' not in extracted:
+            return None
 
-    def set_info_callback(self, callback):
-        self.info_callback = callback
+        entry, = extracted['entries']
+        if callback:
+            callback(entry)
+
+    def trouble(self, message=None, tb=None):
+        pass  # TODO: should we just pass here?
 
     def to_screen(self, message, skip_eol=False):
         pass
@@ -56,15 +54,11 @@ class DummyFileDownloader(FileDownloader):
     def to_stderr(self, message):
         pass
 
-    def to_cons_title(self, message):
-        pass
-
-    def trouble(self, message=None, tb=None):
-        pass  # TODO: should we just pass here?
 
 #
 #
 #
+
 
 def create_video(entry):
     getter = lambda name, attr: (name, operator.attrgetter(attr))

@@ -1,9 +1,13 @@
+from __future__ import division
+import sys
+import time
+
+
 import datetime
 import functools
 import re
 
 import vlc
-
 
 VLC_FLAGS = ['--no-video', '--quiet']
 
@@ -49,12 +53,7 @@ class Player(object):
 
     def end_callback(self, event, video=None):
         self.player.stop()
-
-    def time_callback(self, event, video):
-        if not self.window:
-            return
-        timef = _time_format(self.player.get_time() / 1000)
-        self.window.feedback('{} {}'.format(timef, video.title))
+        #self.window.feedback('{} {}'.format(timef, video.title))
 
     def info(self):
         pass
@@ -65,8 +64,24 @@ class Player(object):
     def play(self, uri):
         self.player.set_media(self.instance.media_new(uri))
         # self.bind('MediaPlayerEndReached', self.end_callback, video)
-        # self.bind('MediaPlayerTimeChanged', self.time_callback, video)
+
+        progress = Progress(self.player.get_length())
+
+        def time_changed(event):
+            current = self.player.get_time()
+            progress.update(current)
+
+        def length_changed(event):
+
+            low, high = 0, self.player.get_length()
+            progress.extents(low, high)
+
+        self.bind('MediaPlayerLengthChanged', length_changed)
+        self.bind('MediaPlayerTimeChanged', time_changed)
+
         self.player.play()
+        while True:
+            continue
 
     def pause(self):
         if self.player.is_playing():
@@ -82,3 +97,23 @@ class Player(object):
 
     def quit(self):
         pass
+
+
+class Progress(object):
+    def __init__(self, low=0, high=0):
+        self.extents(low, high)
+
+    def start(self):
+        self.update(self.low)
+
+    def finish(self):
+        self.update(self.high)
+
+    def update(self, value):
+        percent = ((value - self.low) / self.high) * 100
+
+        sys.stdout.write("\r|%-73s| %d%%" % ('#' * int(percent * .73), percent))
+        sys.stdout.flush()
+
+    def extents(self, low, high):
+        self.low, self.high = low, high
