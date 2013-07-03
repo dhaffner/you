@@ -10,13 +10,13 @@ def play(no_window=False, search=False, v=None, url=None, *query):
     main = you.You(no_window=no_window)
 
     if v and not url:
-        url = 'http://youtube.com/v/{}'.format(v)
+        url = 'http://www.youtube.com/watch?v={}'.format(v)
 
     if search:
         main.search(' '.join(query))
 
     elif url:
-        main.extract(url)  # TODO refactor into actual play method
+        main.play(url)
 
 
 @baker.command(shortopts={"no_window": "n"})
@@ -29,7 +29,6 @@ def search(no_window=False, *query):
 def extract(url):
     main = you.You(no_window=True)
     main.extract(url)
-    print(ul)
 
 
 if __name__ == '__main__':

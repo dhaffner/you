@@ -11,10 +11,9 @@ import gdata.youtube.service
 
 from youtube_dl import YoutubeDL
 
-from pprint import pprint
-
 from six.moves import map, filter
 
+from pprint import pprint
 
 YouTubeService = gdata.youtube.service.YouTubeService
 YouTubeVideoQuery = gdata.youtube.service.YouTubeVideoQuery
@@ -50,9 +49,6 @@ class Extractor(YoutubeDL):
 
     def extract(self, uri):
         extracted = self.extract_info(uri, download=False)
-
-        print uri, extracted
-
         if 'entries' not in extracted:
             return None
 
@@ -73,7 +69,6 @@ class Extractor(YoutubeDL):
 #
 #
 
-pprint(dir(Video))
 
 def entry2video(entry):
     fields = {name: attrgetter(attr)(entry) for (name, attr) in FIELDS_MAP.iteritems()}
@@ -84,5 +79,4 @@ def search(terms):
     query = YouTubeVideoQuery()
     query.vq = terms
     query.racy = 'include'
-    service = YouTubeService()
-    return map(entry2video, service.YouTubeQuery(query).entry)
+    return map(entry2video, YouTubeService().YouTubeQuery(query).entry)
