@@ -65,14 +65,13 @@ class Player(object):
         self.player.set_media(self.instance.media_new(uri))
         # self.bind('MediaPlayerEndReached', self.end_callback, video)
 
-        progress = Progress(self.player.get_length())
+        progress = Progress()
 
         def time_changed(event):
             current = self.player.get_time()
             progress.update(current)
 
         def length_changed(event):
-
             low, high = 0, self.player.get_length()
             progress.extents(low, high)
 
@@ -110,6 +109,9 @@ class Progress(object):
         self.update(self.high)
 
     def update(self, value):
+        if self.high == 0:
+            return
+
         percent = ((value - self.low) / self.high) * 100
 
         sys.stdout.write("\r|%-73s| %d%%" % ('#' * int(percent * .73), percent))
