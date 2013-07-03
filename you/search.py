@@ -2,28 +2,43 @@ import itertools
 import collections
 import operator
 
+
+from operator import attrgetter
+
 import gdata
 import gdata.youtube
 import gdata.youtube.service
 
-from youtube_dl import FileDownloader, YoutubeDL
+from youtube_dl import YoutubeDL
 
 from pprint import pprint
+
+from six.moves import map, filter
+
 
 YouTubeService = gdata.youtube.service.YouTubeService
 YouTubeVideoQuery = gdata.youtube.service.YouTubeVideoQuery
 
-FIELDS = ('title', 'description', 'url', 'date', 'duration')
-video = collections.namedtuple('video', FIELDS)
+
+FIELDS_MAP = {
+    'date': 'published.text',
+    'description': 'media.description.text',
+    'duration': 'media.duration.seconds',
+    'title': 'media.title.text',
+    'url': 'media.player.url'
+}
+
+FIELDS = list(FIELDS_MAP.iterkeys())
+Video = collections.namedtuple('video', FIELDS)
 
 
 def noop(*args, **kwargs):
     pass
 
 
-def extract(url, callback=None):
+def extract(url):
     extractor = Extractor({'outtmpl': '', 'format_limit': '35'})
-    extractor.extract(url, callback)
+    return extractor.extract(url)
 
 
 # Motivation: provide a simple FileDownloader to effectively get URLs for the
@@ -31,19 +46,18 @@ def extract(url, callback=None):
 class Extractor(YoutubeDL):
     def __init__(self, params):
         super(Extractor, self).__init__(params)
-        # for extractor in map(apply, EXTRACTORS):
-        #     self.add_info_extractor(extractor)
         self.add_default_info_extractors()
 
-    def extract(self, uri, callback=None):
+    def extract(self, uri):
         extracted = self.extract_info(uri, download=False)
+
+        print uri, extracted
 
         if 'entries' not in extracted:
             return None
 
         entry, = extracted['entries']
-        if callback:
-            callback(entry)
+        return entry
 
     def trouble(self, message=None, tb=None):
         pass  # TODO: should we just pass here?
@@ -59,24 +73,16 @@ class Extractor(YoutubeDL):
 #
 #
 
+pprint(dir(Video))
 
-def create_video(entry):
-    getter = lambda name, attr: (name, operator.attrgetter(attr))
-    fields = itertools.starmap(getter,
-        [('title', 'media.title.text'),
-         ('date', 'published.text'),
-         ('description', 'media.description.text'),
-         ('duration', 'media.duration.seconds'),
-         ('url', 'media.player.url')])
-    return video(**dict((name, attr(entry)) for (name, attr) in fields))
+def entry2video(entry):
+    fields = {name: attrgetter(attr)(entry) for (name, attr) in FIELDS_MAP.iteritems()}
+    return Video(**fields)
 
 
 def search(terms):
-    service = YouTubeService()
     query = YouTubeVideoQuery()
     query.vq = terms
     query.racy = 'include'
-    entries = service.YouTubeQuery(query).entry
-    return map(create_video, entries)
-
-
+    service = YouTubeService()
+    return map(entry2video, service.YouTubeQuery(query).entry)
