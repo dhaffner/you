@@ -8,6 +8,8 @@ from search import search, extract
 from window import Window
 
 from pprint import pprint
+from six.moves import map, filter
+
 
 class You(object):
     def __init__(self, no_window=True):
@@ -55,13 +57,7 @@ class You(object):
         self.player.play(uri)
 
     def extract(self, url):
-        def callback(info):
-            if 'url' not in info:
-                # TODO: fuck
-                return
-            self.play(info['url'])
-
-        extract(url, callback=callback)
+        return extract(url)
 
     def run(self):
         self.window.run()

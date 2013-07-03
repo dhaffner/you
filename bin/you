@@ -5,27 +5,31 @@ import baker
 from you import you
 
 
-@baker.command(default=True, shortopts={"no_window": "n"})
-def play(no_window=False, url=None, *query):
+@baker.command(default=True, shortopts={"no_window": "n", "search": "s"})
+def play(no_window=False, search=False, v=None, url=None, *query):
     main = you.You(no_window=no_window)
 
-    if url is not None:
-        main.extract(url)
+    if v and not url:
+        url = 'http://youtube.com/v/{}'.format(v)
 
-    else:
+    if search:
         main.search(' '.join(query))
 
+    elif url:
+        main.extract(url)  # TODO refactor into actual play method
 
-@baker.command
-def search(*query):
-    main = you.You(no_window=True)
+
+@baker.command(shortopts={"no_window": "n"})
+def search(no_window=False, *query):
+    main = you.You(no_window=no_window)
     main.search(' '.join(query))
 
 
 @baker.command
-def extract(uri):
-    from you import search
-    search.extract(uri)
+def extract(url):
+    main = you.You(no_window=True)
+    main.extract(url)
+    print(ul)
 
 
 if __name__ == '__main__':
