@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import argparse
+import sys
 
-from helpers import lazyproperty, get_full_line, take
+from you.helpers import lazyproperty, get_full_line, take
+from you.player import Player
+from you.search import search, extract
+from you.window import Window
 
-from player import Player
-from search import search, extract
-from window import Window
-
-from pprint import pprint
-from six.moves import map, filter
 
 class You(object):
     def __init__(self, no_window=True):
@@ -45,7 +42,6 @@ class You(object):
 
             print('   {}'.format(v.url))
 
-
     def on_input(self, text):
         results = search(text)
         self.window.set_results(results)
@@ -60,8 +56,10 @@ class You(object):
         return key
 
     def play(self, url):
+        sys.stdout.write('Extracting media URL from {}'.format(url))
         extracted = extract(url)
         if extracted and 'url' in extracted:
+            sys.stdout.write('\r')
             self.player.play(extracted['url'])
 
     def extract(self, url):

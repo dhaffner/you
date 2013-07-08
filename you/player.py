@@ -1,16 +1,17 @@
 from __future__ import division
-import sys
+
 import time
-
-
 import datetime
 import functools
 import re
 
+import sys
 
-from helpers import Progress
+from getch import getch
 
-import vlc
+from you import vlc
+from you.helpers import Progress
+
 
 VLC_FLAGS = ['--no-video', '--quiet']
 
@@ -78,8 +79,9 @@ class Player(object):
             low, high = 0, self.player.get_length()
             progress.extents(low, high)
 
-        def play_end(event=None):
-            sys.exit()
+        def play_end(event):
+            print('end')
+            sys.exit(0)
 
         self.bind('MediaPlayerLengthChanged', length_changed)
         self.bind('MediaPlayerTimeChanged', time_changed)

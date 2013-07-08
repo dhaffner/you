@@ -2,33 +2,33 @@
 
 import baker
 
-from you import you
+from you import main
 
 
 @baker.command(default=True, shortopts={"no_window": "n", "search": "s"})
 def play(no_window=False, search=False, v=None, url=None, *query):
-    main = you.You(no_window=no_window)
+    controller = main.You(no_window=no_window)
 
     if v and not url:
         url = 'http://www.youtube.com/watch?v={}'.format(v)
 
     if search:
-        main.search(' '.join(query))
+        controller.search(' '.join(query))
 
     elif url:
-        main.play(url)
+        controller.play(url)
 
 
 @baker.command(shortopts={"no_window": "n"})
 def search(no_window=False, *query):
-    main = you.You(no_window=no_window)
-    main.search(' '.join(query))
+    controller = main.You(no_window=no_window)
+    controller.search(' '.join(query))
 
 
 @baker.command
 def extract(url):
-    main = you.You(no_window=True)
-    main.extract(url)
+    controller = main.You(no_window=True)
+    controller.extract(url)
 
 
 if __name__ == '__main__':
