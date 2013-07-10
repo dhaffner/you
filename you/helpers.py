@@ -6,6 +6,17 @@ from itertools import islice
 from subprocess import check_output
 
 
+
+
+def rprint(string, file=sys.stdout, flush=True, prepend='\r'.__add__):
+    if not string.startswith('\r'):
+        string = prepend(string)
+
+    file.write(string)
+    if flush:
+        file.flush()
+
+
 class lazyproperty(property):
     """
     A decorator for lazily-evaluated object properties.
@@ -46,6 +57,9 @@ class Progress(object):
     def finish(self):
         self.update(self.high)
 
+    def clear(self):
+        rprint('')
+
     def update(self, value, labels=None):
         if self.high == 0:
             return
@@ -66,8 +80,7 @@ class Progress(object):
         else:
             bar = '{}{}'.format('#' * num_bars, ' ' * (bar_length - num_bars))
 
-        sys.stdout.write("\r" + bar)
-        sys.stdout.flush()
+        rprint(bar)
 
     def extents(self, low, high):
         self.low, self.high = low, high

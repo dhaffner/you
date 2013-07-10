@@ -58,8 +58,9 @@ class You(object):
     def play(self, url):
         sys.stdout.write('Extracting media URL from {}'.format(url))
         extracted = extract(url)
+        if 'url' not in extracted:
+            print('\n Could not extract the media from URL.')
         if extracted and 'url' in extracted:
-            sys.stdout.write('\r')
             self.player.play(extracted['url'])
 
     def extract(self, url):

@@ -42,7 +42,6 @@ class Player(object):
             ' ': self.pause,
             '+': functools.partial(self.seek, 1000),
             '-': functools.partial(self.seek, -1000),
-            'i': self.info,
             'q': self.quit,
 #            '/': self.window.focus
         }
@@ -52,45 +51,45 @@ class Player(object):
 
         def bind(event, callback, *args):
             attach(getevent(event), callback, *args)
-
         self.bind = bind
-
-    def end_callback(self, event, video=None):
-        self.player.stop()
-        #self.window.feedback('{} {}'.format(timef, video.title))
-
-    def info(self):
-        pass
 
     def seek(self, delta):
         self.player.set_time(self.player.get_time() + delta)
 
     def play(self, uri):
-        self.player.set_media(self.instance.media_new(uri))
-
+        player = self.player
+        player.set_media(self.instance.media_new(uri))
 
         progress = Progress()
 
         def time_changed(event):
-            current = self.player.get_time()
-            progress.update(current)
+            progress.update(player.get_time())
 
         def length_changed(event):
-            low, high = 0, self.player.get_length()
-            progress.extents(low, high)
+            progress.extents(0, player.get_length())
 
-        def play_end(event):
-            print('end')
-            sys.exit(0)
+        def play_end(event=None):
+            progress.clear()
 
         self.bind('MediaPlayerLengthChanged', length_changed)
         self.bind('MediaPlayerTimeChanged', time_changed)
         self.bind('MediaPlayerEndReached', play_end)
 
         try:
-            self.player.play()
+            player.play()
+            playing = False
             while True:
-                time.sleep(1.0)
+                if not playing:
+                    time.sleep(1.0)
+                    playing = player.is_playing()
+                    continue
+
+                remaining = player.get_length() - player.get_time()
+                if playing and remaining <= 0:
+                    return
+                else:
+                    time.sleep(min(1.0, remaining * 1000))
+
         except KeyboardInterrupt:
             play_end()
 
@@ -108,6 +107,3 @@ class Player(object):
 
     def quit(self):
         pass
-
-
-
