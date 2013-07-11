@@ -5,10 +5,6 @@ import datetime
 import functools
 import re
 
-import sys
-
-from getch import getch
-
 from you import vlc
 from you.helpers import Progress
 
@@ -75,20 +71,21 @@ class Player(object):
         self.bind('MediaPlayerTimeChanged', time_changed)
         self.bind('MediaPlayerEndReached', play_end)
 
-        try:
-            player.play()
-            playing = False
-            while True:
-                if not playing:
-                    time.sleep(1.0)
-                    playing = player.is_playing()
-                    continue
+        player.play()
 
-                remaining = player.get_length() - player.get_time()
-                if playing and remaining <= 0:
-                    return
-                else:
-                    time.sleep(min(1.0, remaining * 1000))
+        try:
+
+            # Sleep until the media begins playing.
+            while True:
+                if player.is_playing():
+                    break
+                time.sleep(1.0)
+
+            while True:
+                remaining = player.get_length() - player.get_time()  # ms
+                if remaining <= 0:
+                    break
+                time.sleep(min(1.0, remaining * 1000))
 
         except KeyboardInterrupt:
             play_end()
