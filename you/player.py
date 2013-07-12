@@ -5,8 +5,18 @@ import datetime
 import functools
 import re
 
+import sys
+import select
+import tty
+import termios
+
+
 from you import vlc
 from you.helpers import Progress
+
+
+def check_for_input():
+    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 
 VLC_FLAGS = ['--no-video', '--quiet']
@@ -19,7 +29,7 @@ def _vlc_instance(options=VLC_FLAGS):
     return vlc.Instance(options)
 
 
-def _time_format(duration):
+def timef(duration):
     display = str(datetime.timedelta(seconds=int(duration)))
     return re.sub(r'^(0\:)*', '', display)
 
@@ -59,7 +69,10 @@ class Player(object):
         progress = Progress()
 
         def time_changed(event):
-            progress.update(player.get_time())
+            start, end = player.get_time(), player.get_length()
+
+            labels = timef(start / 1000), timef(end / 1000)
+            progress.update(start, labels=labels)
 
         def length_changed(event):
             progress.extents(0, player.get_length())
@@ -73,7 +86,10 @@ class Player(object):
 
         player.play()
 
+        settings = termios.tcgetattr(sys.stdin)
         try:
+
+            tty.setcbreak(sys.stdin.fileno())
 
             # Sleep until the media begins playing.
             while True:
@@ -82,13 +98,20 @@ class Player(object):
                 time.sleep(1.0)
 
             while True:
+                if check_for_input():
+                    self.input(sys.stdin.read(1))
+
                 remaining = player.get_length() - player.get_time()  # ms
                 if remaining <= 0:
                     break
+
                 time.sleep(min(1.0, remaining * 1000))
 
         except KeyboardInterrupt:
             play_end()
+
+        finally:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 
     def pause(self):
         if self.player.is_playing():
@@ -96,11 +119,9 @@ class Player(object):
         else:
             self.player.play()
 
-    def input(self, video, size, key):
+    def input(self, key):
         if key in self.keybindings:
             apply(self.keybindings[key])
-        else:
-            return key
 
     def quit(self):
         pass

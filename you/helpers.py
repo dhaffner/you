@@ -45,9 +45,9 @@ class Progress(object):
     def __init__(self, low=0, high=0):
         self.extents(low, high)
 
-        self.width = 80
+        self.width = 79
         try:
-            self.width = get_console_width()
+            self.width = get_console_width() - 1
         except:  # TODO specify Exception
             pass
 
