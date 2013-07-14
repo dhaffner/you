@@ -1,8 +1,6 @@
-import itertools
 import collections
-import operator
 
-
+from collections import namedtuple
 from operator import attrgetter
 
 import gdata
@@ -28,7 +26,7 @@ FIELDS_MAP = {
 }
 
 FIELDS = list(FIELDS_MAP.iterkeys())
-Video = collections.namedtuple('video', FIELDS)
+Video = namedtuple('video', FIELDS)
 
 
 def noop(*args, **kwargs):
@@ -40,8 +38,6 @@ def extract(url):
     return extractor.extract(url)
 
 
-# Motivation: provide a simple FileDownloader to effectively get URLs for the
-# YouTube videos we want to play.
 class Extractor(YoutubeDL):
     def __init__(self, params):
         super(Extractor, self).__init__(params)
@@ -63,11 +59,6 @@ class Extractor(YoutubeDL):
 
     def to_stderr(self, message):
         pass
-
-
-#
-#
-#
 
 
 def entry2video(entry):

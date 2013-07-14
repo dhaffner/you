@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
+import baker
+
 from you import main
 
 
-
-import baker
-
-
-@baker.command(default=True, shortopts={"no_window": "n", "search": "s"})
-def play(no_window=False, search=False, v=None, url=None, *query):
+@baker.command(default=True, shortopts={
+    "no_window": "n",
+    "search": "s",
+    "lucky": "l"
+})
+def play(no_window=False, search=False, lucky=False, v=None, url=None, *query):
     controller = main.You(no_window=no_window)
 
     if v and not url:
         url = 'http://www.youtube.com/watch?v={}'.format(v)
 
     if search:
-        controller.search(' '.join(query))
+        controller.search(' '.join(query), lucky=lucky)
 
     elif url:
         controller.play(url)

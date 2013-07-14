@@ -6,8 +6,6 @@ from itertools import islice
 from subprocess import check_output
 
 
-
-
 def rprint(string, file=sys.stdout, flush=True, prepend='\r'.__add__):
     if not string.startswith('\r'):
         string = prepend(string)
@@ -57,8 +55,8 @@ class Progress(object):
     def finish(self):
         self.update(self.high)
 
-    def clear(self):
-        rprint('')
+    def clear(self, newline=False):
+        rprint(newline and '\n' or '')
 
     def update(self, value, labels=None):
         if self.high == 0:

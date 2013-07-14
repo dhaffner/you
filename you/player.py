@@ -1,8 +1,8 @@
 from __future__ import division
 
 import time
-import datetime
-import functools
+from datetime import timedelta
+from functools import partial
 import re
 
 import sys
@@ -30,7 +30,7 @@ def _vlc_instance(options=VLC_FLAGS):
 
 
 def timef(duration):
-    display = str(datetime.timedelta(seconds=int(duration)))
+    display = str(timedelta(seconds=int(duration)))
     return re.sub(r'^(0\:)*', '', display)
 
 
@@ -46,23 +46,23 @@ class Player(object):
         self.keybindings = {
             'p': self.pause,
             ' ': self.pause,
-            '+': functools.partial(self.seek, 1000),
-            '-': functools.partial(self.seek, -1000),
+            '+': partial(self.seek, 1000),
+            '-': partial(self.seek, -1000),
             'q': self.quit,
-#            '/': self.window.focus
         }
 
         attach = self.player.event_manager().event_attach
-        getevent = functools.partial(getattr, vlc.EventType)
+        getevent = partial(getattr, vlc.EventType)
 
         def bind(event, callback, *args):
             attach(getevent(event), callback, *args)
+
         self.bind = bind
 
     def seek(self, delta):
         self.player.set_time(self.player.get_time() + delta)
 
-    def play(self, uri):
+    def play(self, uri, label=None):
         player = self.player
         player.set_media(self.instance.media_new(uri))
 
@@ -71,14 +71,14 @@ class Player(object):
         def time_changed(event):
             start, end = player.get_time(), player.get_length()
 
-            labels = timef(start / 1000), timef(end / 1000)
+            labels = timef(start / 1000), ' '.join(filter(None, [label, timef(end / 1000)]))
             progress.update(start, labels=labels)
 
         def length_changed(event):
             progress.extents(0, player.get_length())
 
         def play_end(event=None):
-            progress.clear()
+            progress.clear(True)
 
         self.bind('MediaPlayerLengthChanged', length_changed)
         self.bind('MediaPlayerTimeChanged', time_changed)

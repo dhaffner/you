@@ -21,14 +21,16 @@ class You(object):
     def player(self):
         return Player()
 
-    def search(self, query, limit=10):
+    def search(self, query, limit=10, lucky=False):
         results = search(query)
 
         if limit and limit > 0:
             results = take(limit, results)
 
-        if not self.no_window:
-            self.window.set_results(results)
+        if lucky:
+            v = next(results)
+            self.play(v.url)
+            return
 
         hr = get_full_line()
         for i, v in enumerate(results):
@@ -56,12 +58,12 @@ class You(object):
         return key
 
     def play(self, url):
-        sys.stdout.write('Extracting media URL from {}'.format(url))
         extracted = extract(url)
         if 'url' not in extracted:
             print('\n Could not extract the media from URL.')
+
         if extracted and 'url' in extracted:
-            self.player.play(extracted['url'])
+            self.player.play(extracted['url'], label=extracted.get('title'))
 
     def extract(self, url):
         return extract(url)
