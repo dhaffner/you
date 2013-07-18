@@ -2,48 +2,44 @@
 
 An audio-only YouTube player for the command line.
 
+## Requirements
+
+you relies on [VLC](http://www.videolan.org/) being installed already. All other dependencies should be installed automatically as needed.
+
 ## Installation
 
-**On a Mac**, open `/Applications/Utilities/Terminal.app` and type:
+you is installable via pip.
 
-    git clone https://github.com/dhaffner/you.git
-    cd you
-    make all
+    pip install https://github.com/dhaffner/you.git
 
 After that, type `you` to verify that the install completed successfully.
 
 ## Usage
 
-Run `you` with no arguments for a detailed listing of the available
-commands and options. Below are some simple usage examples.
-
-#### Search for a video on YouTube
-Type `you` followed by any terms you wish to search for. This will result
-in a list of search results, which you may select from and play.
-
-    you "dirt off your shoulder"
-
-The search command accepts any number of arguments.
-
-    you men at work land down under
-
-#### Play a specific video
-
-    (todo)
-
-Display the help.
+To show the full list of commandline options, run:
 
     you -h
 
+#### Search for a video on YouTube
+
+    you -s will smith summertime
+
+#### Play a specific video URL
+
+    you --url="http://www.youtube.com/watch?v=S6WpvBHdk1c"
+
+#### Play a video by specifying its ID
+
+    you -v S6WpvBHdk1c
+
+#### Search for a video and play the first result
+
+    you -sl will smith summertime
+
 ## Keyboard shortcuts
 
-Esc - quit
+`p` or ` `: pause
 
-Tab - switch between input and result list
+`CTRL-c`: quit
 
-Enter - search or play selected result
-
-P or Spacebar - pause
-
-
-
+`-`, `+`: seek backward or forward 1 second
