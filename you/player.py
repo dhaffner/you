@@ -35,12 +35,11 @@ def timef(duration):
 
 
 class Player(object):
-    def __init__(self, instance=None, window=None):
+    def __init__(self, instance=None):
         if instance is None:
             instance = _vlc_instance()
 
         self.instance = instance
-        self.window = window
 
         self.player = instance.media_player_new()
         self.keybindings = {

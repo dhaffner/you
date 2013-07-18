@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='you',
-      version='0.1',
+      version='0.2',
       description='An audio-only YouTube player for the command line.',
       url='http://github.com/dhaffner/you',
       author='Dustin Haffner',

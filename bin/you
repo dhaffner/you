@@ -6,12 +6,11 @@ from you import main
 
 
 @baker.command(default=True, shortopts={
-    "no_window": "n",
     "search": "s",
     "lucky": "l"
 })
-def play(no_window=False, search=False, lucky=False, v=None, url=None, *query):
-    controller = main.You(no_window=no_window)
+def play(search=False, lucky=False, v=None, url=None, *query):
+    controller = main.You()
 
     if v and not url:
         url = 'http://www.youtube.com/watch?v={}'.format(v)
@@ -23,15 +22,15 @@ def play(no_window=False, search=False, lucky=False, v=None, url=None, *query):
         controller.play(url)
 
 
-@baker.command(shortopts={"no_window": "n"})
-def search(no_window=False, *query):
-    controller = main.You(no_window=no_window)
+@baker.command
+def search(*query):
+    controller = main.You()
     controller.search(' '.join(query))
 
 
 @baker.command
 def extract(url):
-    controller = main.You(no_window=True)
+    controller = main.You()
     controller.extract(url)
 
 

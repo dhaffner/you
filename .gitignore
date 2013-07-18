@@ -20,5 +20,3 @@ lib64
 .DS_Store
 
 *.log
-
-vlc.py

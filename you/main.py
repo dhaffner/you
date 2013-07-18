@@ -6,16 +6,11 @@ import sys
 from you.helpers import lazyproperty, get_full_line, take
 from you.player import Player
 from you.search import search, extract
-from you.window import Window
 
 
 class You(object):
-    def __init__(self, no_window=True):
-        self.no_window = no_window
-
-        if not no_window:
-            self.window = Window(input_callback=self.on_input,
-                                 select_callback=self.on_select)
+    def __init__(self):
+        pass
 
     @lazyproperty
     def player(self):
@@ -44,19 +39,6 @@ class You(object):
 
             print('   {}'.format(v.url))
 
-    def on_input(self, text):
-        results = search(text)
-        self.window.set_results(results)
-
-    def on_select(self, video, size=None, key=None):
-        if not (size or key):  # new video
-            self.extract(video)
-
-        elif self.player:
-            self.player.input(video, size, key)
-
-        return key
-
     def play(self, url):
         extracted = extract(url)
         if 'url' not in extracted:
@@ -67,6 +49,3 @@ class You(object):
 
     def extract(self, url):
         return extract(url)
-
-    def run(self):
-        self.window.run()
