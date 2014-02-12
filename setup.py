@@ -9,5 +9,5 @@ setup(name='you',
       license='MIT',
       packages=['you'],
       scripts=['bin/you'],
-      install_requires=['baker', 'urwid', 'six', 'gdata', 'youtube_dl'],
+      install_requires=['docopt', 'six', 'gdata', 'youtube_dl'],
       zip_safe=False)
