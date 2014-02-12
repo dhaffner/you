@@ -22,7 +22,7 @@ To show the full list of commandline options, run:
 
 #### Search for a video on YouTube
 
-    you -s will smith summertime
+    you -q will smith summertime
 
 #### Play a specific video URL
 
@@ -34,7 +34,7 @@ To show the full list of commandline options, run:
 
 #### Search for a video and play the first result
 
-    you -sl will smith summertime
+    you -l will smith summertime
 
 ## Keyboard shortcuts
 
