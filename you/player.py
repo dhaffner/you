@@ -69,7 +69,6 @@ class Player(object):
 
         def time_changed(event):
             start, end = player.get_time(), player.get_length()
-
             labels = (timef(start / 1000),
                       ' '.join(filter(None, [label, timef(end / 1000)])))
             progress.update(start, labels=labels)
