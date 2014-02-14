@@ -22,7 +22,7 @@ class You(object):
 
         if lucky:
             v = next(results)
-            self.play(v.url)
+            self.play(v)
             return
 
         hr = get_full_line()
@@ -37,7 +37,7 @@ class You(object):
 
             print('   {}'.format(v.url))
 
-    def play(self, url):
-        extracted = extract(url)
+    def play(self, video):
+        extracted = extract(video.url)
         if extracted:
-            self.player.play(extracted, label='')
+            self.player.play(extracted, label=video.title)
