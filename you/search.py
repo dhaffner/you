@@ -6,8 +6,6 @@ import gdata
 import gdata.youtube
 import gdata.youtube.service
 
-from six.moves import map
-
 from subprocess import check_output
 
 
@@ -46,4 +44,4 @@ def search(terms):
     query = YouTubeVideoQuery()
     query.vq = terms
     query.racy = 'include'
-    return map(entry2video, YouTubeService().YouTubeQuery(query).entry)
+    return (entry2video(e) for e in YouTubeService().YouTubeQuery(query).entry)
