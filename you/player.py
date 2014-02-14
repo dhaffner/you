@@ -13,22 +13,18 @@ import termios
 from . import vlc
 from .helpers import Progress
 
-
-def check_for_input():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
-
-
 VLC_FLAGS = ['--no-video', '--quiet']
-
-VLC_REMOTE = ('http://git.videolan.org/?p=vlc/bindings/python.git;a=blob_plain'
-              ';f=generated/vlc.py;hb=HEAD')
 
 
 def _vlc_instance(options=VLC_FLAGS):
     return vlc.Instance(options)
 
 
-def timef(duration):
+def _check_for_input():
+    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+
+
+def _timef(duration):
     display = str(timedelta(seconds=int(duration)))
     return re.sub(r'^(0\:)*', '', display)
 
@@ -68,8 +64,8 @@ class Player(object):
 
         def time_changed(event):
             start, end = player.get_time(), player.get_length()
-            labels = (timef(start / 1000),
-                      ' '.join(filter(None, [label, timef(end / 1000)])))
+            labels = (' '.join(filter(None, [label, _timef(start / 1000)])),
+                      _timef(end / 1000))
             progress.update(start, labels=labels)
 
         def length_changed(event):
@@ -96,7 +92,7 @@ class Player(object):
                 time.sleep(1.0)
 
             while True:
-                if check_for_input():
+                if _check_for_input():
                     self.input(sys.stdin.read(1))
 
                 remaining = player.get_length() - player.get_time()  # ms
