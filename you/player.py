@@ -10,9 +10,8 @@ import select
 import tty
 import termios
 
-
-from you import vlc
-from you.helpers import Progress
+from . import vlc
+from .helpers import Progress
 
 
 def check_for_input():

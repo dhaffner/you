@@ -4,7 +4,8 @@
 Usage:
   you --url=<url>
   you --video=<id>
-  you [--lucky | -l] [--query | -q] <term>...
+  you [--lucky] <term>...
+  you [--query] [--limit=<count>] <term>...
 
 Options:
   -h --help             Show this screen.
@@ -13,23 +14,25 @@ Options:
   --version             Show version.
   --query -q            Search.
   --lucky -l            Search and take first result.
+  --limit=<count>       Limit the number of search results. [default: 10]
 """
+
 from docopt import docopt
-from you import main
+from you import you
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.0.1')
-    controller = main.You()
 
     if arguments['--url']:
-        controller.play(arguments['--url'])
+        you.play(arguments['--url'])
 
     elif arguments['--video']:
         url = 'http://www.youtube.com/watch?v={}'.format(arguments['--video'])
-        controller.play(url)
+        you.play(url)
 
     elif arguments['--query']:
-        controller.search(' '.join(arguments['<term>']))
+        you.search(' '.join(arguments['<term>']),
+                   limit=int(arguments['--limit']))
 
     elif arguments['--lucky']:
-        controller.search(' '.join(arguments['<term>']), lucky=True)
+        you.search(' '.join(arguments['<term>']), lucky=True)

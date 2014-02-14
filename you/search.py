@@ -1,19 +1,9 @@
-
 from collections import namedtuple
 from operator import attrgetter
 
-import gdata
-import gdata.youtube
-import gdata.youtube.service
+from gdata.youtube.service import YouTubeService, YouTubeVideoQuery
 
-from subprocess import check_output
-
-
-YouTubeService = gdata.youtube.service.YouTubeService
-YouTubeVideoQuery = gdata.youtube.service.YouTubeVideoQuery
-
-
-FIELDS_MAP = {
+FIELD_MAP = {
     'date': 'published.text',
     'description': 'media.description.text',
     'duration': 'media.duration.seconds',
@@ -21,26 +11,17 @@ FIELDS_MAP = {
     'url': 'media.player.url'
 }
 
-FIELDS = list(FIELDS_MAP.iterkeys())
-Video = namedtuple('video', FIELDS)
 
-
-def noop(*args, **kwargs):
-    pass
-
-
-def extract(url):
-    cmd = ['youtube-dl', '-f', 'worst', '-g', url]
-    return check_output(cmd).strip()
+Video = namedtuple('video', FIELD_MAP.keys())
 
 
 def entry2video(entry):
     fields = {name: attrgetter(attr)(entry)
-              for (name, attr) in FIELDS_MAP.iteritems()}
+              for (name, attr) in FIELD_MAP.items()}
     return Video(**fields)
 
 
-def search(terms):
+def youtube_search(terms):
     query = YouTubeVideoQuery()
     query.vq = terms
     query.racy = 'include'

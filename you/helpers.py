@@ -15,30 +15,6 @@ def rprint(string, file=sys.stdout, flush=True, prepend='\r'.__add__):
         file.flush()
 
 
-class lazyproperty(property):
-    """
-    A decorator for lazily-evaluated object properties.
-    """
-    def __init__(self, *args):
-        self.__called__ = False
-        super(lazyproperty, self).__init__(*args)
-
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return None
-        elif self.__called__:
-            value = self.__value__
-        else:
-            value = self.__value__ = self.fget(obj)
-            self.__called__ = True
-        return value
-
-    def __delete__(self, obj):
-        if self.__called__:
-            self.__called__ = False
-            del self.__value__
-
-
 class Progress(object):
     def __init__(self, low=0, high=0):
         self.extents(low, high)
